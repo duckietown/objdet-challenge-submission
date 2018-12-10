@@ -2,6 +2,7 @@
 from __future__ import print_function # TODO is this needed
 
 import sys
+import os
 import rospy
 import object_detection_lib
 from tf_object_detection.msg import detection_results
@@ -24,14 +25,19 @@ class ObjectDetectionNode:
         # Flag to indicate that we have been requested to use the next image
         self.__scan_next = False
 
-        # Read the path for models/research/object_detection directory from the parameter server or use this default
-        object_detection_path = rospy.get_param('/object_detection/path', '/home/ubuntu/git/models/research/object_detection')
+        # Read the path for models/research/object_detection directory from the parameter server (which is configured in
+        # .yaml file) or use this default
+        rospy.set_param('/object_detection/path', os.path.abspath('../models/research'))
+        object_detection_path = rospy.get_param('/object_detection/path')
+        # object_detection_path = rospy.get_param('/object_detection/path')
+        # add models/research into PYTHONPATH such that we can use modules inside this directory
+        sys.path.append(os.path.abspath('../models/research'))
 
         # Read the confidence level, any object with a level below this will not be used
         confidence_level = rospy.get_param('/object_detection/confidence_level', 0.50)
 
         # Create the object_detection_lib class instance
-        self.__odc = object_detection_lib.ObjectDetection(object_detection_path, confidence_level)
+        self.__odc = object_detection_lib.ObjectDetection(confidence_level)
 
     # Callback for start command message
     def StartCallback(self, data):

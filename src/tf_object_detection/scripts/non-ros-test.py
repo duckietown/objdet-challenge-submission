@@ -3,12 +3,13 @@ import sys
 import os
 import cv2
 
-sys.path.append('/Users/zhou/Downloads/tf_object_detection-0.1.0/src')
+sys.path.append('../src')
+sys.path.append("../models/research/")
 
 import object_detection_lib
 
 # Create the instance of ObjectDetection
-odc = object_detection_lib.ObjectDetection('models/research/object_detection', 0.5)
+odc = object_detection_lib.ObjectDetection(0.5)
 
 cvimg = cv2.imread("/Users/zhou/Desktop/duckietown/duckietown_raw_dataset/all_images/average/b_BR_doort_frame00212.jpg")
 

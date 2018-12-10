@@ -2,7 +2,7 @@
 # Object Detection with TensorFlow and TensorFlow object detection API
 # We will be using a pre-trained model from TensorFlow detection model zoo
 # See https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-
+import os
 import numpy as np
 import tensorflow as tf
 from object_detection.utils import label_map_util
@@ -10,15 +10,22 @@ from object_detection.utils import visualization_utils as vis_util
 
 class ObjectDetection:
 
-    def __init__(self, path, confidence): # path will be to the models/research/object_detection directory
+    def __init__(self, confidence):
         # Pre-trained model name
         # MODEL_NAME = 'ssdlite_mobilenet_v2_coco_2018_05_09'
         # PATH_TO_FROZEN_GRAPH = path + '/' + MODEL_NAME + '/frozen_inference_graph.pb'
         # PATH_TO_LABELS = path + '/data/' + 'mscoco_label_map.pbtxt'
-        PATH_TO_FROZEN_GRAPH = "/Users/zhou/Desktop/duckietown/duckietown_training/models/rfcn_resnet101_coco_2018_01_28/" \
-                               "frozen_inference_graph.pb"
 
-        PATH_TO_LABELS = "/Users/zhou/Desktop/duckietown/duckietown_training/data/duckie_label_map.pbtxt"
+        # print( os.path.abspath( './' )) # this line will print the abs directory which calls current function
+        PATH_TO_FROZEN_GRAPH = "../inference_files/frozen_inference_graph.pb"
+        # get the absolute file path, otherwise, error occurs
+        # PATH_TO_FROZEN_GRAPH = os.path.abspath(PATH_TO_FROZEN_GRAPH)
+        # use the absulote path, otherwise it has some issues with VM in mac (test in my laptop)
+        # PATH_TO_FROZEN_GRAPH = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/tflite_graph.pb"
+        PATH_TO_LABELS = "../inference_files/duckie_label_map.pbtxt"
+
+        # PATH_TO_LABELS = os.path.abspath(PATH_TO_LABELS)
+        # PATH_TO_LABELS = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
 
         # Load a frozen Tensorflow model into memory
         self.__detection_graph = tf.Graph()
