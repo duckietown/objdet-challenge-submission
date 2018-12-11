@@ -10,6 +10,7 @@ project(tf_object_detection)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  duckietown_msgs
   message_generation  
 )
 
@@ -104,7 +105,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES tf_object_detection
-  CATKIN_DEPENDS rospy message_runtime std_msgs
+  CATKIN_DEPENDS rospy message_runtime std_msgs duckietown_msgs
 #  DEPENDS system_lib
 )
 

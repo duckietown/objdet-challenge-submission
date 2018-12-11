@@ -31,8 +31,7 @@ class ObjectDetectionNode:
         object_detection_path = rospy.get_param('/object_detection/path')
         # object_detection_path = rospy.get_param('/object_detection/path')
         # add models/research into PYTHONPATH such that we can use modules inside this directory
-        sys.path.append(os.path.abspath('../models/research'))
-
+        
         # Read the confidence level, any object with a level below this will not be used
         confidence_level = rospy.get_param('/object_detection/confidence_level', 0.50)
 

@@ -17,15 +17,15 @@ class ObjectDetection:
         # PATH_TO_LABELS = path + '/data/' + 'mscoco_label_map.pbtxt'
 
         # print( os.path.abspath( './' )) # this line will print the abs directory which calls current function
-        PATH_TO_FROZEN_GRAPH = "../inference_files/frozen_inference_graph.pb"
+        PATH_TO_FROZEN_GRAPH = "/node_ws/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
         # get the absolute file path, otherwise, error occurs
         # PATH_TO_FROZEN_GRAPH = os.path.abspath(PATH_TO_FROZEN_GRAPH)
         # use the absulote path, otherwise it has some issues with VM in mac (test in my laptop)
-        # PATH_TO_FROZEN_GRAPH = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/tflite_graph.pb"
-        PATH_TO_LABELS = "../inference_files/duckie_label_map.pbtxt"
+        # PATH_TO_FROZEN_GRAPH = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
+        PATH_TO_LABELS = "/node_ws/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
 
         # PATH_TO_LABELS = os.path.abspath(PATH_TO_LABELS)
-        # PATH_TO_LABELS = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
+        PATH_TO_LABELS = "/node_ws/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
 
         # Load a frozen Tensorflow model into memory
         self.__detection_graph = tf.Graph()
