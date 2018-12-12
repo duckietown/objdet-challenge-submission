@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   visualization_msgs
   sensor_msgs
-  tf_conversions
+#  tf_conversions
   tf
 )
 
