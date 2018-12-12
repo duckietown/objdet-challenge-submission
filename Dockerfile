@@ -1,4 +1,4 @@
-FROM duckietown/rpi-ros-kinetic-roscore:master18
+FROM zgxsin/ros_tensorflow:1.1
 
 LABEL maintainer="Guoxiang Zhou@student.ethz.ch"
 
@@ -7,7 +7,7 @@ LABEL maintainer="Guoxiang Zhou@student.ethz.ch"
 # DUCKIEBOT_NAME - the hostname of the Duckiebot, e.g. duckiebot
 
 
-RUN [ "cross-build-start" ]
+#RUN [ "cross-build-start" ]
 
 RUN mkdir /node-ws 
 
@@ -23,7 +23,7 @@ RUN /bin/bash -c "cd /node-ws && source /opt/ros/kinetic/setup.bash && catkin_ma
 
 RUN /bin/bash -c "source /node-ws/devel/setup.bash"
 
-RUN [ "cross-build-end" ]
+#RUN [ "cross-build-end" ]
 
 WORKDIR /node-ws
 
