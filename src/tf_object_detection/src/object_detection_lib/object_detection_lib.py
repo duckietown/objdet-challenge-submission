@@ -2,34 +2,19 @@
 # Object Detection with TensorFlow and TensorFlow object detection API
 # We will be using a pre-trained model from TensorFlow detection model zoo
 # See https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-import os
 import numpy as np
 import tensorflow as tf
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
 class ObjectDetection:
-
     def __init__(self, confidence):
-        # Pre-trained model name
-        # MODEL_NAME = 'ssdlite_mobilenet_v2_coco_2018_05_09'
-        # PATH_TO_FROZEN_GRAPH = path + '/' + MODEL_NAME + '/frozen_inference_graph.pb'
-        # PATH_TO_LABELS = path + '/data/' + 'mscoco_label_map.pbtxt'
-
-        # print( os.path.abspath( './' )) # this line will print the abs directory which calls current function
-        PATH_TO_FROZEN_GRAPH = "/node-ws/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
-        # get the absolute file path, otherwise, error occurs
-        # PATH_TO_FROZEN_GRAPH = os.path.abspath(PATH_TO_FROZEN_GRAPH)
-        # use the absulote path, otherwise it has some issues with VM in mac (test in my laptop)
-        # PATH_TO_FROZEN_GRAPH = "/mnt/hgfs/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
-        # PATH_TO_LABELS = "/node-ws/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
-
-        # PATH_TO_LABELS = os.path.abspath(PATH_TO_LABELS)
+        # This is the path to frozen model
+        PATH_TO_FROZEN_GRAPH = "/node-ws/src/tf_object_detection/inference_files/tflite_graph.pb"
+        # This is the path to the label_map of our project, which is required by the tensorlfow API
         PATH_TO_LABELS = "/node-ws/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
-
         # Load a frozen Tensorflow model into memory
         self.__detection_graph = tf.Graph()
-
         with self.__detection_graph.as_default():
             od_graph_def = tf.GraphDef()
             with tf.gfile.GFile(PATH_TO_FROZEN_GRAPH, 'rb') as fid:
@@ -38,12 +23,11 @@ class ObjectDetection:
                 tf.import_graph_def(od_graph_def, name='')
 
             # Open a session here. The first time we run the session it will take
-            # a time to run as it autotunes, after that it will run faster
+            # a time to run as it auto-tunes, after that it will run faster
             self.__sess = tf.Session(graph=self.__detection_graph)
 
         # Load the label map. Label maps map indices to category names
         self.__category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
-
         # Store the confidence level
         self.__confidence = confidence
 
@@ -60,6 +44,7 @@ class ObjectDetection:
                 tensor_name = key + ':0'
                 if tensor_name in all_tensor_names:
                     tensor_dict[key] = tf.get_default_graph().get_tensor_by_name(tensor_name)
+            # The code below won't execute because we don't have masks in our data
             if 'detection_masks' in tensor_dict:
                 # The following processing is only for single image
                 detection_boxes = tf.squeeze(tensor_dict['detection_boxes'], [0])
@@ -74,8 +59,8 @@ class ObjectDetection:
                     tf.greater(detection_masks_reframed, 0.5), tf.uint8)
                 # Follow the convention by adding back the batch dimension
                 tensor_dict['detection_masks'] = tf.expand_dims(detection_masks_reframed, 0)
-            image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
 
+            image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
             # Run inference
             output_dict = self.__sess.run(tensor_dict,feed_dict={image_tensor: np.expand_dims(image, 0)})
 
@@ -94,7 +79,6 @@ class ObjectDetection:
     # The img parameter is an OpenCV image
     def scan_for_objects(self, image_np):
         # The img is already a numpy array of size height,width, 3
-
         # Actual detection.
         output_dict = self.run_inference_for_single_image(image_np)
 
