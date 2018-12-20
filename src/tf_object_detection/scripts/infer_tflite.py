@@ -10,7 +10,10 @@ PATH_TO_LABELS = "/Users/zhou/Downloads/objid_node/src/tf_object_detection/infer
 
 category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
 # Load TFLite model and allocate tensors.
-interpreter = tf.lite.Interpreter(model_path="/Users/zhou/Desktop/inference_files/detect.tflite")
+interpreter = tf.lite.Interpreter(model_path="/Users/zhou/Desktop/duckietown/duckietown_training/models/ssd_resnet50_v1"
+                                             "_fpn_shared_box_predictor_640x640_coco14_sync/detect.tflite-37890")
+# "/Users/zhou/Desktop/duckietown/duckietown_training/models/ssd_resnet50_v1_fpn_shared_box_predictor_640x640_coco14_sync/detect.tflite-37890"
+# "/Users/zhou/Desktop/inference_files/detect.tflite"
 interpreter.allocate_tensors()
 
 # Get input and output tensors.
@@ -26,12 +29,12 @@ input_shape = input_details[0]['shape']
 
 input_data = cv2.imread("/Users/zhou/Desktop/duckietown/duckietown_raw_dataset/all_images/good/b_BR_doort_frame00380.jpg")
 input_image = input_data.copy()
-input_data = cv2.resize(input_data, (300,300))
+input_data = cv2.resize(input_data, (640,640))
 
 input_data = np.expand_dims(input_data, axis=0)
 input_data = np.asarray(input_data, np.float32)
 
-input_data = (np.float32(input_data) - 127.5) / 127.5
+input_data = (np.float32(input_data) - 128) / 128
 
 interpreter.set_tensor(input_details[0]['index'], input_data)
 
@@ -58,7 +61,7 @@ vis_util.visualize_boxes_and_labels_on_image_array(
     detection_scores,
     category_index,
     use_normalized_coordinates=True,
-    line_thickness=2,
+    line_thickness=1,
     min_score_thresh=0.3)
 
 
