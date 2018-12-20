@@ -11,7 +11,7 @@ import object_detection_lib
 # Create the instance of ObjectDetection
 odc = object_detection_lib.ObjectDetection(0.5)
 
-cvimg = cv2.imread("/Users/zhou/Desktop/duckietown/duckietown_raw_dataset/all_images/average/b_BR_doort_frame00212.jpg")
+cvimg = cv2.imread("/Users/zhou/Desktop/duckietown/duckietown_raw_dataset/all_images/good/b_BR_doort_frame00380.jpg")
 
 # Detect the objects
 object_names = odc.scan_for_objects(cvimg)

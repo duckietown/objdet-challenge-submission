@@ -10,9 +10,13 @@ from object_detection.utils import visualization_utils as vis_util
 class ObjectDetection:
     def __init__(self, confidence):
         # This is the path to frozen model
-        PATH_TO_FROZEN_GRAPH = "/node-ws/src/tf_object_detection/inference_files/tflite_graph.pb"
+        PATH_TO_FROZEN_GRAPH = "/node-ws/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
+        # For local testing, shoudle be deleted afterwards
+        # PATH_TO_FROZEN_GRAPH = "/Users/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/frozen_inference_graph.pb"
         # This is the path to the label_map of our project, which is required by the tensorlfow API
         PATH_TO_LABELS = "/node-ws/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
+        # For local testing, shoudle be deleted afterwards
+        # PATH_TO_LABELS = "/Users/zhou/Downloads/objid_node/src/tf_object_detection/inference_files/duckie_label_map.pbtxt"
         # Load a frozen Tensorflow model into memory
         self.__detection_graph = tf.Graph()
         with self.__detection_graph.as_default():
@@ -92,7 +96,7 @@ class ObjectDetection:
             self.__category_index,
             instance_masks=output_dict.get('detection_masks'),
             use_normalized_coordinates=True,
-            line_thickness=2,
+            line_thickness=1,
             min_score_thresh=self.__confidence)
 
         # Return a list of object names detected

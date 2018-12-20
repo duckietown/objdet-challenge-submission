@@ -18,12 +18,12 @@ class ObjectDetectionNode:
         # Publisher to publish the result of classes
         # self.__result_pub = rospy.Publisher('/'+os.environ['DUCKIEBOT_NAME'] +"/predicted_result", detection_results, queue_size=1)
         # Subscribe to topic which will kick off object detection in the next image
-        self.__command_sub = rospy.Subscriber('/'+os.environ['DUCKIEBOT_NAME'] + "/start", Empty, self.StartCallback)
+        # self.__command_sub = rospy.Subscriber('/'+os.environ['DUCKIEBOT_NAME'] + "/start", Empty, self.StartCallback)
         # Subscribe to the topic which will supply the image fom the camera
-        self.__image_sub = rospy.Subscriber('/'+ os.environ['DUCKIEBOT_NAME'] + "/camera_node/image/compressed", Image, self.Imagecallback)
+        self.__image_sub = rospy.Subscriber('/'+ os.environ['DUCKIEBOT_NAME'] + "/camera_node/image/raw", Image, self.Imagecallback)
 
         # Flag to indicate that we have been requested to use the next image
-        self.__scan_next = False
+        self.__scan_next = True
 
         # Read the confidence level, any object with a level below this will not be used
         # This parameter is set in the config.yaml file
@@ -36,23 +36,25 @@ class ObjectDetectionNode:
         # Indicate to use the next image for the scan
         self.__scan_next = True
 
+
     # Callback for new image received
     def Imagecallback(self, data):
-        if self.__scan_next == True:
-            rospy.loginfo("Predicting")
-            self.__scan_next = False
-            # Convert the ROS image to an OpenCV image
-            image = self.__bridge.imgmsg_to_cv2(data, "bgr8")
+        # if self.__scan_next == True:
+        # print("WORKS!")
+        rospy.loginfo("Predicting")
+        # self.__scan_next = False
+        # Convert the ROS image to an OpenCV image
+        image = self.__bridge.imgmsg_to_cv2(data, "bgr8")
 
-            # The supplied image will be modified if known objects are detected
-            # Predict result, the result will be drawn to `image`
-            self.__odc.scan_for_objects(image)
-            rospy.loginfo("Finish prediction")
-            # publish the image, it may have been modified
-            try:
-                self.__image_pub.publish(self.__bridge.cv2_to_imgmsg(image, "bgr8"))
+        # The supplied image will be modified if known objects are detected
+        # Predict result, the result will be drawn to `image`
+        self.__odc.scan_for_objects(image)
+        rospy.loginfo("Finish prediction")
+        # publish the image, it may have been modified
+        try:
+            self.__image_pub.publish(self.__bridge.cv2_to_imgmsg(image, "bgr8"))
 
-            except CvBridgeError as e:
+        except CvBridgeError as e:
                 print(e)
 
             # Publish names of objects detected
@@ -63,7 +65,7 @@ class ObjectDetectionNode:
 def main(args):
     rospy.init_node('tf_object_detection_node', anonymous=False)
     # initialize class ObjectDetectionNode
-    _ = ObjectDetectionNode()
+    odc = ObjectDetectionNode()
     rospy.loginfo("tf object detection node started")
     try:
         rospy.spin()
